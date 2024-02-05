@@ -1,0 +1,54 @@
+name: Generate Images
+
+on:
+  push:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install ImageMagick
+        run: sudo apt-get install imagemagick
+
+      - name: Make directories
+        run: |
+          rm -rf PNGs
+          rm -rf BMPs
+          mkdir "./PNGs"
+          mkdir "./BMPs"
+
+      - name: Run the conversion script but for Linux
+        run: |
+          for file in *.psd; do
+              if [ -f "$file" ]; then
+                  filename=$(basename -- "$file")
+                  extension="${filename##*.}"
+                  filename="${filename%.*}"
+          		
+              		# convert every PSD into a PNG
+              		magick convert "$filename.psd[0]" "./PNGs/$filename.png"
+              		
+              		# crop the transparent pixels
+              		magicke mogrify -trim +repage "./PNGs/$filename.png"
+              		echo "generated ./PNGs/$filename.png"
+              		
+              		# convert each PNG into a BMP for Arduino
+              		magick convert "./PNGs/$filename.png" -type truecolor "./BMPs/$filename.bmp"
+              		echo "generated ./BMPs/$filename.bmp"
+              fi
+          done
+          
+      - name: Push Images to Repo
+        run: |
+          git config --global user.name "adambkehl"
+          git config --global user.email "me@adamkehl.com"
+          git add PNGs
+          git add BMPs
+          git commit -m "Auto-generate Images"
+          git push
