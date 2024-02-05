@@ -32,14 +32,14 @@ jobs:
                   filename="${filename%.*}"
           		
               		# convert every PSD into a PNG
-              		magick convert "$filename.psd[0]" "./PNGs/$filename.png"
+              		convert "$filename.psd[0]" "./PNGs/$filename.png"
               		
               		# crop the transparent pixels
-              		magicke mogrify -trim +repage "./PNGs/$filename.png"
+              		mogrify -trim +repage "./PNGs/$filename.png"
               		echo "generated ./PNGs/$filename.png"
               		
               		# convert each PNG into a BMP for Arduino
-              		magick convert "./PNGs/$filename.png" -type truecolor "./BMPs/$filename.bmp"
+              		convert "./PNGs/$filename.png" -type truecolor "./BMPs/$filename.bmp"
               		echo "generated ./BMPs/$filename.bmp"
               fi
           done
