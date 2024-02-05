@@ -48,7 +48,7 @@ jobs:
         run: |
           git config --global user.name "adambkehl"
           git config --global user.email "me@adamkehl.com"
-          git add PNGs
-          git add BMPs
+          git add -f PNGs
+          git add -f BMPs
           git commit -m "Auto-generate Images"
           git push
